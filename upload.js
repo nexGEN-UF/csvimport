@@ -1,30 +1,30 @@
 var csv = require('fast-csv');
 var mongoose = require('mongoose');
-var Author = require('./author');
+var Student = require('./student.model');
 
 exports.post = function (req, res) {
 	if (!req.files)
 		return res.status(400).send('No files were uploaded.');
-	
-	var authorFile = req.files.file;
 
-	var authors = [];
-		
+	var studentFile = req.files.file;
+
+	var students = [];
+
 	csv
-	 .fromString(authorFile.data.toString(), {
+	 .fromString(studentFile.data.toString(), {
 		 headers: true,
 		 ignoreEmpty: true
 	 })
 	 .on("data", function(data){
 		 data['_id'] = new mongoose.Types.ObjectId();
-		 
-		 authors.push(data);
+
+		 students.push(data);
 	 })
 	 .on("end", function(){
-		 Author.create(authors, function(err, documents) {
+		 Student.create(students, function(err, documents) {
 			if (err) throw err;
-			
-			res.send(authors.length + ' authors have been successfully uploaded.');
+
+			res.send(students.length + ' students have been successfully uploaded.');
 		 });
 	 });
 };

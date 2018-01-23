@@ -6,9 +6,13 @@ var server = require('http').Server(app);
 
 app.use(fileUpload());
 
-server.listen(80);
+var port = process.env.PORT || 8080;
+server.listen(port, function(){
+  console.log('Now listening on port ', port);
+});
 
-mongoose.connect('mongodb://localhost/csvimport');
+var mongoURI = process.env.MONGOURI || require("./secrets").MONGOURI;
+mongoose.connect(mongoURI);
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');

@@ -9,6 +9,7 @@ Desktop.ini
 $RECYCLE.BIN/
 
 node_modules
+secrets.js
 
 # Windows Installer files
 *.cab
