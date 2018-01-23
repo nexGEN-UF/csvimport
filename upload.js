@@ -22,9 +22,13 @@ exports.post = function (req, res) {
 	 })
 	 .on("end", function(){
 		 Student.create(students, function(err, documents) {
-			if (err) throw err;
-
-			res.send(students.length + ' students have been successfully uploaded.');
+			// if (err) throw err;
+			if (err) {
+				res.send('error uploading csv file');
+				return;
+			} else {
+				res.send(students.length + ' students have been successfully uploaded.');
+			}
 		 });
 	 });
 };
