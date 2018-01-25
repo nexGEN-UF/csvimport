@@ -15,7 +15,6 @@ var studentSchema = mongoose.Schema({
   description: String,
   resume: String,
   linkedin: String,
-  __v: Number,
   twitter: String,
   facebook: String,
   personalSite1: String,
