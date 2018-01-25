@@ -9,26 +9,57 @@ exports.post = function (req, res) {
 	var studentFile = req.files.file;
 
 	var students = [];
+	var studentPromises = [];
+	var newStudents = 0;
+
+	var failures = [];
 
 	csv
 	 .fromString(studentFile.data.toString(), {
-		 headers: true,
-		 ignoreEmpty: true
+		headers: true,
+		ignoreEmpty: true
 	 })
 	 .on("data", function(data){
-		 data['_id'] = new mongoose.Types.ObjectId();
-
-		 students.push(data);
+		students.push(data);
 	 })
 	 .on("end", function(){
-		 Student.create(students, function(err, documents) {
-			// if (err) throw err;
-			if (err) {
-				res.send('error uploading csv file');
-				return;
-			} else {
-				res.send(students.length + ' students have been successfully uploaded.');
-			}
-		 });
-	 });
+		students.forEach((student, ind, arr) => {
+
+			// Save each database request promise into array so we can keep track of when they all finish
+			studentPromises[ind] = Student.findOneAndUpdate(
+				{ studentId: student.studentId },
+				student,
+				{ upsert: true, setDefaultsOnInsert: true }
+			);
+
+			
+			// Execute the db request
+			studentPromises[ind].exec(function(err, document) {
+				if(err) {
+					failures.push(err);
+					console.log(err);
+				}
+
+				// The returned document is empty if the student did not exist in the collection
+				if(isEmpty(document)) {
+					newStudents++;
+				}
+			});
+
+		});
+
+		// Wait for all db requests to finish so we can return the amount of new students created
+		Promise.all(studentPromises).then(function(vals) {
+			res.send(`Updated ${students.length - newStudents} students and created ${newStudents} new students. <br> ${failures}`);
+		});
+	});
 };
+
+// Returns true if passed object is empty
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
