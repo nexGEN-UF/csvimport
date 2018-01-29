@@ -27,12 +27,12 @@ exports.post = function (req, res) {
 
 			// Save each database request promise into array so we can keep track of when they all finish
 			studentPromises[ind] = Student.findOneAndUpdate(
-				{ studentId: student.studentId },
+				{ _id: student._id },
 				student,
 				{ upsert: true, setDefaultsOnInsert: true }
 			);
 
-			
+
 			// Execute the db request
 			studentPromises[ind].exec(function(err, document) {
 				if(err) {

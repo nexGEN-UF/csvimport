@@ -1,25 +1,46 @@
 var mongoose = require('mongoose');
 
 var studentSchema = mongoose.Schema({
-  studentId: {
+  _id: {
     type: Number,
-    required: true,
-    unique: true
+    required: true
+    // unique: true
   },
   name: {
     type: String,
     required: true
   },
-  position: String,
+  major: String,
   headshot: String,
-  description: String,
-  resume: String,
-  linkedin: String,
-  twitter: String,
-  facebook: String,
-  personalSite1: String,
+  personal_statement: String,
+  head_shot: String,
+  pillar:{
+    semester_joined: String,
+    semester_left: String,
+    title: String
+  },
+  positions: [String],
+  emails: [String],
+  phone: String,
+  profile_links:{
+    linkedin_url: String,
+    twitter: String,
+    resume_link: String,
+    github_link: String,
+    personal_website: String,
+    facebook: String
+  },
+  isAlumni: Boolean,
   isHired: Boolean,
-  gradDate: String
+  isGraduating: Boolean,
+  current_employment: {
+    employer: String,
+    job_title: String
+  },
+  isPlaced: Boolean,
+  PlacedAt: String,
+  skills: [String],
+  project_assignments: [String]
 });
 
 var Student = mongoose.model('Student', studentSchema);
