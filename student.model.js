@@ -11,7 +11,6 @@ var studentSchema = mongoose.Schema({
     required: true
   },
   major: String,
-  headshot: String,
   personal_statement: String,
   head_shot: String,
   pillar:{
